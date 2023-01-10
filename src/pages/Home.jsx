@@ -56,6 +56,7 @@ export default function Home() {
     if (isPaused) {
       setIsPlaying(true);
       setIsPaused(false);
+      sound.play();
       return;
     }
     setIsPaused(true);
