@@ -159,6 +159,9 @@ export default function Home() {
             min
           </label>
         </div>
+        <div>
+          <p>{`Current player: ${currentPlayer}`}</p>
+        </div>
         <div className="flex w-full justify-center gap-20">
           <div className="flex flex-row gap-10">
             {isSwap ? (
