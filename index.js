@@ -2,6 +2,8 @@ let currentPlayer = 2;
 let interval;
 let startTime = 5 * 60;
 
+
+
 function formatTime(time) {
   const minutes = Math.floor(time / 60);
   let seconds = time % 60;
