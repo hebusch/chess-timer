@@ -35,7 +35,6 @@ export default function Home() {
 
   const changePlayer = () => {
     if (!isPlaying) return;
-    // reproduce sound
     sound.play();
     if (currentPlayer === 'white') {
       setCurrentPlayer('black');
