@@ -7,10 +7,13 @@ import Spinner from '../components/Spinner';
 export default function Home() {
   const START_TIME = 10;
   const [startTime, setStartTime] = useState(START_TIME * 60000);
+  const [sameTime, setSameTime] = useState(true);
   const [start, setStart] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [currentPlayer, setCurrentPlayer] = useState('white');
+  const [whitePreTime, setwhitePreTime] = useState(startTime);
+  const [blackPreTime, setblackPreTime] = useState(startTime);
   const [whiteTime, setWhiteTime] = useState(startTime);
   const [blackTime, setBlackTime] = useState(startTime);
   const [currentInterval, setCurrentInterval] = useState(null);
@@ -26,11 +29,35 @@ export default function Home() {
     },
   });
 
-  const handleStartTimeChange = (e) => {
+  const handleTimeChange = (e) => {
     if (start) return;
     setStartTime(e.target.value * 60000);
     setWhiteTime(e.target.value * 60000);
     setBlackTime(e.target.value * 60000);
+  };
+
+  const handleBlackTimeChange = (e) => {
+    if (start) return;
+    setblackPreTime(e.target.value * 60000);
+    setBlackTime(e.target.value * 60000);
+  };
+
+  const handleWhiteTimeChange = (e) => {
+    if (start) return;
+    setwhitePreTime(e.target.value * 60000);
+    setWhiteTime(e.target.value * 60000);
+  };
+
+  const handleSameTimeChange = () => {
+    if (start) return;
+    setSameTime(!sameTime);
+    if (sameTime) {
+      setWhiteTime(whitePreTime);
+      setBlackTime(blackPreTime);
+      return;
+    }
+    setWhiteTime(startTime);
+    setBlackTime(startTime);
   };
 
   const changePlayer = () => {
@@ -66,20 +93,29 @@ export default function Home() {
   const handleReset = () => {
     if (!start) return;
     clearInterval(currentInterval);
-    setWhiteTime(startTime);
-    setBlackTime(startTime);
     setCurrentPlayer('white');
     setCurrentInterval(null);
     setIsPlaying(false);
     setIsPaused(false);
     setStart(false);
     setEnded(false);
+    if (sameTime) {
+      setWhiteTime(startTime);
+      setBlackTime(startTime);
+      return;
+    }
+    setWhiteTime(whitePreTime);
+    setBlackTime(blackPreTime);
   };
 
   const handleKeyPress = (e) => {
     if (e.keyCode === PRESS_KEY) {
       if (!start) {
         handleStart();
+        return;
+      }
+      if (isPaused) {
+        handlePause();
         return;
       }
       changePlayer();
@@ -146,17 +182,54 @@ export default function Home() {
     >
       <h1>Chess Timer</h1>
       <div>
-        <div>
-          <label htmlFor="starttime">
-            Start time:
+        <div className="flex gap-4">
+          {sameTime ? (
+            <label htmlFor="starttime">
+              Start time:
+              <input
+                name="starttime"
+                type="number"
+                className="mx-2 border border-black text-right"
+                value={startTime / 60000}
+                onChange={(e) => handleTimeChange(e)}
+              />
+              min
+            </label>
+          ) : (
+            <div className="flex flex-col items-start">
+              <label htmlFor="starttime">
+                White time:
+                <input
+                  name="starttime"
+                  type="number"
+                  className="mx-2 border border-black text-right"
+                  value={whitePreTime / 60000}
+                  onChange={(e) => handleWhiteTimeChange(e)}
+                />
+                min
+              </label>
+              <label htmlFor="starttime">
+                Black Time:
+                <input
+                  name="starttime"
+                  type="number"
+                  className="mx-2 border border-black text-right"
+                  value={blackPreTime / 60000}
+                  onChange={(e) => handleBlackTimeChange(e)}
+                />
+                min
+              </label>
+            </div>
+          )}
+          <label htmlFor="sameTime" className="flex gap-2">
+            Use same time:
             <input
-              name="starttime"
-              type="number"
-              className="mx-2 border border-black text-right"
-              value={startTime / 60000}
-              onChange={(e) => handleStartTimeChange(e)}
+              type="checkbox"
+              name="sameTime"
+              id="sameTime"
+              checked={sameTime}
+              onChange={handleSameTimeChange}
             />
-            min
           </label>
         </div>
         <div>
